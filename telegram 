@@ -1,0 +1,37 @@
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+
+# API токени боти худро дар инҷо ҷойгир кунед
+API_TOKEN = 'YOUR_API_TOKEN'
+
+# Функсия барои фармони /start
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("Салом! Ман боти шумо ҳастам. Чӣ гуна кӯмак кунам?")
+
+# Функсия барои фармони /help
+def help_command(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("Ман фармонҳои зеринро медонам:\n/start - Оғоз\n/help - Маълумот")
+
+# Функсия барои коркарди паёмҳои муқаррарӣ
+def echo(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text(f"Шумо навиштед: {update.message.text}")
+
+# Конфигуратсия ва оғози бот
+def main():
+    updater = Updater(API_TOKEN)
+
+    dispatcher = updater.dispatcher
+
+    # Илова кардани коркардкунандаҳо барои фармонҳо
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("help", help_command))
+
+    # Илова кардани коркардкунанда барои паёмҳо
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
+
+    # Оғози бот
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
